@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Michael Davidson. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "WXViewController.h"
 
-@interface ViewController ()
+@interface WXViewController ()
 
 @end
 
-@implementation ViewController
+@implementation WXViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
