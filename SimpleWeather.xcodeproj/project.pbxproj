@@ -14,6 +14,10 @@
 		2F486E7119F1726200CD3F69 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F486E7019F1726200CD3F69 /* Images.xcassets */; };
 		2F486E7419F1726200CD3F69 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F486E7219F1726200CD3F69 /* LaunchScreen.xib */; };
 		2F486E8019F1726200CD3F69 /* SimpleWeatherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F486E7F19F1726200CD3F69 /* SimpleWeatherTests.m */; };
+		9942028C1A645309003D80F5 /* WXClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 9942028B1A645309003D80F5 /* WXClient.m */; };
+		9942028F1A64531E003D80F5 /* WXManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9942028E1A64531E003D80F5 /* WXManager.m */; };
+		994202921A645344003D80F5 /* WXCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = 994202911A645344003D80F5 /* WXCondition.m */; };
+		994202951A64536D003D80F5 /* WXDailyForcast.m in Sources */ = {isa = PBXBuildFile; fileRef = 994202941A64536D003D80F5 /* WXDailyForcast.m */; };
 		99ABCB3C19F1A07400402E90 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 99ABCB2119F1A07400402E90 /* bg.png */; };
 		99ABCB3D19F1A07400402E90 /* bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 99ABCB2219F1A07400402E90 /* bg@2x.png */; };
 		99ABCB3E19F1A07400402E90 /* weather-broken.png in Resources */ = {isa = PBXBuildFile; fileRef = 99ABCB2419F1A07400402E90 /* weather-broken.png */; };
@@ -69,6 +73,14 @@
 		2F486E7E19F1726200CD3F69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F486E7F19F1726200CD3F69 /* SimpleWeatherTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleWeatherTests.m; sourceTree = "<group>"; };
 		7BC4700CB47463252744AC26 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9942028A1A645309003D80F5 /* WXClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXClient.h; sourceTree = "<group>"; };
+		9942028B1A645309003D80F5 /* WXClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXClient.m; sourceTree = "<group>"; };
+		9942028D1A64531E003D80F5 /* WXManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXManager.h; sourceTree = "<group>"; };
+		9942028E1A64531E003D80F5 /* WXManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXManager.m; sourceTree = "<group>"; };
+		994202901A645344003D80F5 /* WXCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXCondition.h; sourceTree = "<group>"; };
+		994202911A645344003D80F5 /* WXCondition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXCondition.m; sourceTree = "<group>"; };
+		994202931A64536D003D80F5 /* WXDailyForcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXDailyForcast.h; sourceTree = "<group>"; };
+		994202941A64536D003D80F5 /* WXDailyForcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXDailyForcast.m; sourceTree = "<group>"; };
 		99ABCB2119F1A07400402E90 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
 		99ABCB2219F1A07400402E90 /* bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg@2x.png"; sourceTree = "<group>"; };
 		99ABCB2419F1A07400402E90 /* weather-broken.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "weather-broken.png"; sourceTree = "<group>"; };
@@ -153,11 +165,19 @@
 				2F486E6819F1726200CD3F69 /* AppDelegate.m */,
 				2F486E6A19F1726200CD3F69 /* WXViewController.h */,
 				2F486E6B19F1726200CD3F69 /* WXViewController.m */,
+				9942028A1A645309003D80F5 /* WXClient.h */,
+				9942028B1A645309003D80F5 /* WXClient.m */,
+				9942028D1A64531E003D80F5 /* WXManager.h */,
+				9942028E1A64531E003D80F5 /* WXManager.m */,
+				994202901A645344003D80F5 /* WXCondition.h */,
+				994202911A645344003D80F5 /* WXCondition.m */,
 				99ABCB2019F1A07400402E90 /* Images */,
 				2F486E6D19F1726200CD3F69 /* Main.storyboard */,
 				2F486E7019F1726200CD3F69 /* Images.xcassets */,
 				2F486E7219F1726200CD3F69 /* LaunchScreen.xib */,
 				2F486E6319F1726200CD3F69 /* Supporting Files */,
+				994202931A64536D003D80F5 /* WXDailyForcast.h */,
+				994202941A64536D003D80F5 /* WXDailyForcast.m */,
 			);
 			path = SimpleWeather;
 			sourceTree = "<group>";
@@ -288,6 +308,7 @@
 				TargetAttributes = {
 					2F486E5F19F1726200CD3F69 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 95KCNPSBS5;
 					};
 					2F486E7819F1726200CD3F69 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -398,9 +419,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9942028F1A64531E003D80F5 /* WXManager.m in Sources */,
 				2F486E6C19F1726200CD3F69 /* WXViewController.m in Sources */,
 				2F486E6919F1726200CD3F69 /* AppDelegate.m in Sources */,
 				2F486E6619F1726200CD3F69 /* main.m in Sources */,
+				994202951A64536D003D80F5 /* WXDailyForcast.m in Sources */,
+				994202921A645344003D80F5 /* WXCondition.m in Sources */,
+				9942028C1A645309003D80F5 /* WXClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,9 +550,12 @@
 			baseConfigurationReference = 1EFA266F3C7F707F60B98DD7 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = SimpleWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -536,9 +564,12 @@
 			baseConfigurationReference = 7BC4700CB47463252744AC26 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = SimpleWeather/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
