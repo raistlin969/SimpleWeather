@@ -73,7 +73,7 @@ NSString * const MTLBooleanValueTransformerName = @"MTLBooleanValueTransformerNa
 		reversibleTransformerWithForwardBlock:^ id (NSArray *dictionaries) {
 			if (dictionaries == nil) return nil;
 
-			NSAssert([dictionaries isKindOfClass:NSArray.class], @"Expected an array of dictionaries, got: %@", dictionaries);
+			NSAssert([dictionaries isKindOfClass:NSArray.class], @"Expected a array of dictionaries, got: %@", dictionaries);
 
 			NSMutableArray *models = [NSMutableArray arrayWithCapacity:dictionaries.count];
 			for (id JSONDictionary in dictionaries) {
@@ -95,7 +95,7 @@ NSString * const MTLBooleanValueTransformerName = @"MTLBooleanValueTransformerNa
 		reverseBlock:^ id (NSArray *models) {
 			if (models == nil) return nil;
 
-			NSAssert([models isKindOfClass:NSArray.class], @"Expected an array of MTLModels, got: %@", models);
+			NSAssert([models isKindOfClass:NSArray.class], @"Expected a array of MTLModels, got: %@", models);
 
 			NSMutableArray *dictionaries = [NSMutableArray arrayWithCapacity:models.count];
 			for (id model in models) {
@@ -117,15 +117,11 @@ NSString * const MTLBooleanValueTransformerName = @"MTLBooleanValueTransformerNa
 }
 
 + (NSValueTransformer *)mtl_valueMappingTransformerWithDictionary:(NSDictionary *)dictionary {
-	return [self mtl_valueMappingTransformerWithDictionary:dictionary defaultValue:nil reverseDefaultValue:nil];
-}
-
-+ (NSValueTransformer *)mtl_valueMappingTransformerWithDictionary:(NSDictionary *)dictionary defaultValue:(id)defaultValue reverseDefaultValue:(id)reverseDefaultValue {
 	NSParameterAssert(dictionary != nil);
 	NSParameterAssert(dictionary.count == [[NSSet setWithArray:dictionary.allValues] count]);
 
 	return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(id<NSCopying> key) {
-		return dictionary[key ?: NSNull.null] ?: defaultValue;
+		return dictionary[key];
 	} reverseBlock:^(id object) {
 		__block id result = nil;
 		[dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id anObject, BOOL *stop) {
@@ -134,7 +130,7 @@ NSString * const MTLBooleanValueTransformerName = @"MTLBooleanValueTransformerNa
 				*stop = YES;
 			}
 		}];
-		return result ?: reverseDefaultValue;
+		return result;
 	}];
 }
 

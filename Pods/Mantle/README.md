@@ -27,7 +27,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy, readonly) NSString *reporterLogin;
 @property (nonatomic, copy, readonly) NSDate *updatedAt;
 @property (nonatomic, strong, readonly) GHUser *assignee;
-@property (nonatomic, copy, readonly) NSDate *retrievedAt;
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *body;
@@ -54,7 +53,7 @@ typedef enum : NSUInteger {
     _URL = [NSURL URLWithString:dictionary[@"url"]];
     _HTMLURL = [NSURL URLWithString:dictionary[@"html_url"]];
     _number = dictionary[@"number"];
-
+    
     if ([dictionary[@"state"] isEqualToString:@"open"]) {
         _state = GHIssueStateOpen;
     } else if ([dictionary[@"state"] isEqualToString:@"closed"]) {
@@ -62,7 +61,6 @@ typedef enum : NSUInteger {
     }
 
     _title = [dictionary[@"title"] copy];
-    _retrievedAt = [NSDate date];
     _body = [dictionary[@"body"] copy];
     _reporterLogin = [dictionary[@"user"][@"login"] copy];
     _assignee = [[GHUser alloc] initWithDictionary:dictionary[@"assignee"]];
@@ -81,7 +79,6 @@ typedef enum : NSUInteger {
     _number = [coder decodeObjectForKey:@"number"];
     _state = [coder decodeUnsignedIntegerForKey:@"state"];
     _title = [coder decodeObjectForKey:@"title"];
-    _retrievedAt = [NSDate date];
     _body = [coder decodeObjectForKey:@"body"];
     _reporterLogin = [coder decodeObjectForKey:@"reporterLogin"];
     _assignee = [coder decodeObjectForKey:@"assignee"];
@@ -114,10 +111,7 @@ typedef enum : NSUInteger {
     issue->_updatedAt = self.updatedAt;
 
     issue.title = self.title;
-    issue->_retrievedAt = [NSDate date];
     issue.body = self.body;
-
-    return issue;
 }
 
 - (NSUInteger)hash {
@@ -136,6 +130,8 @@ typedef enum : NSUInteger {
 Whew, that's a lot of boilerplate for something so simple! And, even then, there
 are some problems that this example doesn't address:
 
+ * If the `url` or `html_url` field is missing, `+[NSURL URLWithString:]` will
+   throw an exception.
  * There's no way to update a `GHIssue` with new data from the server.
  * There's no way to turn a `GHIssue` _back_ into JSON.
  * `GHIssueState` shouldn't be encoded as-is. If the enum changes in the future,
@@ -190,8 +186,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *body;
 
-@property (nonatomic, copy, readonly) NSDate *retrievedAt;
-
 @end
 ```
 
@@ -224,9 +218,15 @@ typedef enum : NSUInteger {
 }
 
 + (NSValueTransformer *)stateJSONTransformer {
-    return [NSValueTransformer mtl_valueMappingTransformerWithDictionary:@{
+    NSDictionary *states = @{
         @"open": @(GHIssueStateOpen),
         @"closed": @(GHIssueStateClosed)
+    };
+
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return states[str];
+    } reverseBlock:^(NSNumber *state) {
+        return [states allKeysForObject:state].lastObject;
     }];
 }
 
@@ -242,16 +242,6 @@ typedef enum : NSUInteger {
     }];
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
-    self = [super initWithDictionary:dictionaryValue error:error];
-    if (self == nil) return nil;
-
-    // Store a value that needs to be determined locally upon initialization.
-    _retrievedAt = [NSDate date];
-
-    return self;
-}
-
 @end
 ```
 
@@ -262,6 +252,11 @@ implementations for all these methods.
 
 The problems with the original example all happen to be fixed as well:
 
+> If the `url` or `html_url` field is missing, `+[NSURL URLWithString:]` will throw an exception.
+
+The URL transformer we used (included in Mantle) returns `nil` if given a `nil`
+string.
+
 > There's no way to update a `GHIssue` with new data from the server.
 
 `MTLModel` has an extensible `-mergeValuesForKeysFromModel:` method, which makes
@@ -271,8 +266,7 @@ it easy to specify how new model data should be integrated.
 
 This is where reversible transformers really come in handy. `+[MTLJSONAdapter
 JSONDictionaryFromModel:]` can transform any model object conforming to
-`<MTLJSONSerializing>` back into a JSON dictionary. `+[MTLJSONAdapter
-JSONArrayForModels:]` is the same but turns an array of model objects into an JSON array of dictionaries.
+`<MTLJSONSerializing>` back into a JSON dictionary.
 
 > If the interface of `GHIssue` changes down the road, existing archives might break.
 
@@ -284,7 +278,7 @@ be invoked if overridden, giving you a convenient hook to upgrade old data.
 
 In order to serialize your model objects from or into JSON, you need to
 implement `<MTLJSONSerializing>` in your `MTLModel` subclass. This allows you to
-use `MTLJSONAdapter` to convert your model objects from JSON and back:
+use `MTLJSONAdapter` convert your model objects from JSON and back:
 
 ```objc
 NSError *error = nil;
@@ -309,7 +303,6 @@ properties map to the keys in the JSON representation. Properties that map to
 @property (readonly, nonatomic, strong) NSDate *createdAt;
 
 @property (readonly, nonatomic, assign, getter = isMeUser) BOOL meUser;
-@property (readonly, nonatomic, strong) XYHelper *helper;
 
 @end
 
@@ -322,26 +315,16 @@ properties map to the keys in the JSON representation. Properties that map to
     };
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
-    self = [super initWithDictionary:dictionaryValue error:error];
-    if (self == nil) return nil;
-
-    _helper = [XYHelper helperWithName:self.name createdAt:self.createdAt];
-
-    return self;
-}
-
 @end
 ```
 
-In this example, the `XYUser` class declares four properties that Mantle
+In this example, the `XYUser` class declares three properties that Mantle
 handles in different ways:
 
 - `name` is implicitly mapped to a key of the same name in the JSON
   representation.
 - `createdAt` is converted to its snake case equivalent.
 - `meUser` is not serialized into JSON.
-- `helper` is initialized exactly once after JSON deserialization.
 
 Use `-[NSDictionary mtl_dictionaryByAddingEntriesFromDictionary:]` if your
 model's superclass also implements `MTLJSONSerializing` to merge their mappings.
@@ -495,17 +478,7 @@ If you would prefer to use [CocoaPods](http://cocoapods.org), there are some
 [Mantle podspecs](https://github.com/CocoaPods/Specs/tree/master/Mantle) that
 have been generously contributed by third parties.
 
-If you’re instead developing Mantle on its own, use the `Mantle.xcworkspace` file.
-
 ## License
 
 Mantle is released under the MIT license. See
 [LICENSE.md](https://github.com/github/Mantle/blob/master/LICENSE.md).
-
-## More Info
-
-Have a question? Please [open an issue](https://github.com/Mantle/Mantle/issues/new)!
-
-Mantle also has a chat room on [Slack](https://slack.com/). If you'd like
-to join, just [provide your email address](https://github.com/Mantle/Mantle/pull/357)
-and we'll happily send you an invite!

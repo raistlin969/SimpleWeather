@@ -33,6 +33,7 @@
         _locationManager.delegate = self;
 
         _client = [[WXClient alloc] init];
+        [self.locationManager requestWhenInUseAuthorization];
 
         [[[[RACObserve(self, currentLocation)
             ignore:nil]
